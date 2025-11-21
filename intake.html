@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Solas | Trip Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --solas-bg: #050814;
+      --solas-primary: #f5b25f; /* accent */
+      --solas-primary-soft: rgba(245, 178, 95, 0.18);
+      --solas-surface: #ffffff;
+      --solas-text: #111827;
+      --solas-muted: #6b7280;
+      --solas-border: #e5e7eb;
+      --solas-error: #b91c1c;
+      --radius-xl: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--solas-text);
+      background: #000;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: flex;
+      background: var(--solas-bg);
+      color: var(--solas-surface);
+    }
+
+    .photo-panel {
+      flex: 1 1 50%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .photo-panel img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.05);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.6),
+        rgba(0, 0, 0, 0.15)
+      );
+      pointer-events: none;
+    }
+
+    .photo-branding {
+      position: absolute;
+      top: 1.75rem;
+      left: 1.75rem;
+      font-size: 1.25rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .photo-caption {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 1.75rem;
+      right: 1.75rem;
+      max-width: 340px;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+    }
+
+    .form-panel {
+      flex: 1 1 50%;
+      background: radial-gradient(circle at top left, #111827 0, #050814 36%);
+      color: var(--solas-surface);
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .form-inner {
+      width: 100%;
+      max-width: 640px;
+      padding: 3rem 3.5rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        flex-direction: column;
+      }
+      .photo-panel {
+        min-height: 220px;
+      }
+      .form-inner {
+        padding: 2rem 1.5rem 2.5rem;
+      }
+    }
+
+    .kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--solas-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+      margin: 0 0 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--solas-muted);
+      max-width: 32rem;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.9);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(249, 250, 251, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .step-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .step-description {
+      font-size: 0.9rem;
+      color: var(--solas-muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 640px) {
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--solas-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .required-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--solas-primary);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid var(--solas-border);
+      padding: 0.7rem 0.85rem;
+      font-size: 0.95rem;
+      outline: none;
+      background: rgba(15, 23, 42, 0.8);
+      color: #f9fafb;
+    }
+
+    textarea {
+      min-height: 140px;
+      border-radius: 1rem;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #6b7280;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--solas-primary);
+      box-shadow: 0 0 0 1px var(--solas-primary-soft);
+    }
+
+    .field-inline {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .flag-prefix {
+      border-radius: 999px 0 0 999px;
+      border-right: 0;
+      padding-inline: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.9);
+      white-space: nowrap;
+      font-size: 0.85rem;
+      color: var(--solas-muted);
+    }
+
+    .flag-prefix span {
+      font-size: 1.1rem;
+    }
+
+    .field-inline input {
+      border-radius: 0 999px 999px 0;
+    }
+
+    .footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--solas-muted);
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 150px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.8);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      position: absolute;
+      inset: 0;
+      width: 0;
+      background: var(--solas-primary);
+      transition: width 0.25s ease-out;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: transparent;
+      color: inherit;
+    }
+
+    .btn-primary {
+      background: var(--solas-primary);
+      color: #111827;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .btn-ghost {
+      border-color: rgba(148, 163, 184, 0.45);
+      color: var(--solas-muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--solas-primary);
+      color: var(--solas-primary);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .error-banner {
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      background: rgba(127, 29, 29, 0.6);
+      color: #fecaca;
+      font-size: 0.85rem;
+    }
+
+    .status-text {
+      font-size: 0.85rem;
+      color: var(--solas-muted);
+    }
+
+    .tagline-name {
+      font-weight: 500;
+      color: #f9fafb;
+    }
+
+    .badge-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: var(--solas-muted);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--solas-primary);
+    }
+
+    .muted-link {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      cursor: pointer;
+    }
+
+    .inline-note {
+      font-size: 0.8rem;
+      color: var(--solas-muted);
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- LEFT PANEL / IMAGERY -->
+  <aside class="photo-panel" aria-hidden="true">
+    <!-- You can swap this per-step using JS if you want -->
+    <img src="hero-1.jpg" alt="" />
+    <div class="photo-overlay"></div>
+
+    <div class="photo-branding">SOLAS</div>
+    <div class="photo-caption">
+      Thoughtfully planned journeys, tailored to the way you actually like to travel.
+    </div>
+
+    <!-- Step counter in the bottom-left, mobile-style -->
+    <div style="position:absolute; bottom:1.5rem; left:1.75rem; font-size:0.8rem; letter-spacing:0.14em; text-transform:uppercase;">
+      <span id="stepIndicator">Step 1 of 10</span>
+    </div>
+  </aside>
+
+  <!-- RIGHT PANEL / FORM -->
+  <main class="form-panel">
+    <div class="form-inner">
+      <header>
+        <div class="kicker">Trip details</div>
+        <h1>Hi, let’s get to know each other</h1>
+        <p class="subtitle">
+          Your details will be securely saved and only shared with
+          your Solas advisor. We’ll use this once, to make all your future trips easier.
+        </p>
+      </header>
+
+      <section id="tokenError" style="display:none;">
+        <div class="error-banner">
+          This link is no longer available. It may have expired or already been used.
+          Please contact your Solas advisor for a new secure link.
+        </div>
+      </section>
+
+      <form id="intakeForm" class="card" novalidate>
+        <!-- STEP 1: Legal + preferred name -->
+        <div class="step active" data-step="1" aria-label="Basic details">
+          <div>
+            <p class="step-title">Your name</p>
+            <p class="step-description">
+              We’ll use your legal name for bookings, and an optional preferred name for how we address you.
+            </p>
+          </div>
+
+          <div class="grid grid-2">
+            <div>
+              <label>
+                First name <span class="required-dot" aria-hidden="true"></span>
+              </label>
+              <input name="first_name" autocomplete="given-name" required />
+            </div>
+            <div>
+              <label>
+                Last name <span class="required-dot" aria-hidden="true"></span>
+              </label>
+              <input name="last_name" autocomplete="family-name" required />
+            </div>
+          </div>
+
+          <div class="grid grid-3">
+            <div>
+              <label>Middle name</label>
+              <input name="middle_name" autocomplete="additional-name" />
+            </div>
+            <div>
+              <label>Suffix</label>
+              <input name="suffix" placeholder="Jr., Sr., III" />
+            </div>
+            <div>
+              <label>Preferred name</label>
+              <input name="preferred_name" placeholder="What you like to be called" />
+            </div>
+          </div>
+
+          <div>
+            <label>Pronouns</label>
+            <select name="pronouns">
+              <option value="">Select</option>
+              <option>she/her</option>
+              <option>he/him</option>
+              <option>they/them</option>
+              <option>she/they</option>
+              <option>he/they</option>
+              <option>Prefer not to say</option>
+              <option>Self describe</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- STEP 2: Email -->
+        <div class="step" data-step="2" aria-label="Email addresses">
+          <div>
+            <p class="step-title">What’s your email?</p>
+            <p class="step-description">
+              Choose the inbox where you’d like confirmations and trip materials to go.
+            </p>
+          </div>
+
+          <div class="grid">
+            <div>
+              <label>Personal email</label>
+              <input type="email" name="email_personal" autocomplete="email" />
+            </div>
+            <div>
+              <label>Work email</label>
+              <input type="email" name="email_work" autocomplete="email" />
+            </div>
+            <div>
+              <label>Other email</label>
+              <input type="email" name="email_other" autocomplete="email" />
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Phone numbers -->
+        <div class="step" data-step="3" aria-label="Phone numbers">
+          <div>
+            <p class="step-title">What’s your phone number?</p>
+            <p class="step-description">
+              We’ll only call or text you about trip logistics or urgent changes.
+            </p>
+          </div>
+
+          <div class="grid">
+            <div>
+              <label>Mobile phone</label>
+              <div class="field-inline">
+                <div class="flag-prefix">
+                  <span>🇺🇸</span>
+                  <span>+1</span>
+                </div>
+                <input name="phone_mobile" inputmode="tel" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div>
+              <label>Home phone</label>
+              <div class="field-inline">
+                <div class="flag-prefix">
+                  <span>🇺🇸</span>
+                  <span>+1</span>
+                </div>
+                <input name="phone_home" inputmode="tel" autocomplete="tel-home" />
+              </div>
+            </div>
+
+            <div>
+              <label>Work phone</label>
+              <div class="field-inline">
+                <div class="flag-prefix">
+                  <span>🇺🇸</span>
+                  <span>+1</span>
+                </div>
+                <input name="phone_work" inputmode="tel" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div>
+              <label>Other phone</label>
+              <div class="field-inline">
+                <div class="flag-prefix">
+                  <span>🇺🇸</span>
+                  <span>+1</span>
+                </div>
+                <input name="phone_other" inputmode="tel" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Address -->
+        <div class="step" data-step="4" aria-label="Address">
+          <div>
+            <p class="step-title">What’s your address?</p>
+            <p class="step-description">
+              This helps with certain bookings and keeping your profile consistent.
+            </p>
+          </div>
+
+          <div>
+            <label>Country</label>
+            <select name="country" autocomplete="country">
+              <option value="">Select country</option>
+              <option value="US">United States</option>
+              <option value="MX">Mexico</option>
+              <option value="CA">Canada</option>
+              <!-- etc -->
+            </select>
+          </div>
+
+          <div class="grid grid-2">
+            <div>
+              <label>Address</label>
+              <input name="address_line1" autocomplete="address-line1" />
+            </div>
+            <div>
+              <label>Apt, suite, etc.</label>
+              <input name="address_line2" autocomplete="address-line2" />
+            </div>
+          </div>
+
+          <div class="grid grid-3">
+            <div>
+              <label>City</label>
+              <input name="city" autocomplete="address-level2" />
+            </div>
+            <div>
+              <label>State / Province</label>
+              <input name="state" autocomplete="address-level1" />
+            </div>
+            <div>
+              <label>ZIP / Postal code</label>
+              <input name="postal_code" autocomplete="postal-code" />
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5: Important dates -->
+        <div class="step" data-step="5" aria-label="Important dates">
+          <div>
+            <p class="step-title">Your important dates</p>
+            <p class="step-description">
+              Birthdays, anniversaries, big milestones—so we can help make them special.
+            </p>
+          </div>
+
+          <div class="grid">
+            <div class="grid grid-3">
+              <div>
+                <label>Date type</label>
+                <input name="date_1_label" placeholder="Birthday" />
+              </div>
+              <div>
+                <label>Month</label>
+                <input name="date_1_month" type="number" min="1" max="12" />
+              </div>
+              <div>
+                <label>Day</label>
+                <input name="date_1_day" type="number" min="1" max="31" />
+              </div>
+            </div>
+
+            <div class="grid grid-3">
+              <div>
+                <label>Date type</label>
+                <input name="date_2_label" placeholder="Anniversary" />
+              </div>
+              <div>
+                <label>Month</label>
+                <input name="date_2_month" type="number" min="1" max="12" />
+              </div>
+              <div>
+                <label>Day</label>
+                <input name="date_2_day" type="number" min="1" max="31" />
+              </div>
+            </div>
+          </div>
+
+          <p class="inline-note">
+            You can always share more dates with your advisor later.
+          </p>
+        </div>
+
+        <!-- STEP 6: Allergies / dietary -->
+        <div class="step" data-step="6" aria-label="Dietary restrictions">
+          <div>
+            <p class="step-title">Any allergies or dietary restrictions?</p>
+            <p class="step-description">
+              We’ll flag this on every booking—restaurants, hotels, and experiences.
+            </p>
+          </div>
+
+          <div>
+            <label>Common options</label>
+            <select name="diet_common">
+              <option value="">Select an option</option>
+              <option>Vegetarian</option>
+              <option>Vegan</option>
+              <option>Gluten-free</option>
+              <option>Dairy-free</option>
+              <option>Nut allergy</option>
+              <option>Shellfish allergy</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Custom details</label>
+            <textarea
+              name="diet_custom"
+              placeholder="Anything we should know about allergies, preferences, or sensitivities."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- STEP 7: Flights -->
+        <div class="step" data-step="7" aria-label="Flight details">
+          <div>
+            <p class="step-title">Will you be taking a flight?</p>
+            <p class="step-description">
+              These details should exactly match your passport or government-issued ID.
+            </p>
+          </div>
+
+          <div>
+            <label>Legal name (as on passport)</label>
+            <input name="flight_legal_name" placeholder="Exactly as shown on passport" />
+          </div>
+
+          <div class="grid grid-3">
+            <div>
+              <label>Birth month</label>
+              <input name="flight_birth_month" type="number" min="1" max="12" />
+            </div>
+            <div>
+              <label>Birth day</label>
+              <input name="flight_birth_day" type="number" min="1" max="31" />
+            </div>
+            <div>
+              <label>Birth year</label>
+              <input name="flight_birth_year" type="number" />
+            </div>
+          </div>
+
+          <div>
+            <label>Sex (as appears on ID)</label>
+            <select name="flight_sex">
+              <option value="">Select</option>
+              <option>F</option>
+              <option>M</option>
+              <option>X / Unspecified</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Mobile phone for airline contact</label>
+            <div class="field-inline">
+              <div class="flag-prefix">
+                <span>🇺🇸</span>
+                <span>+1</span>
+              </div>
+              <input name="flight_phone" inputmode="tel" />
+            </div>
+          </div>
+
+          <div>
+            <label>KTN (Global Entry, TSA Pre✓, NEXUS)</label>
+            <input name="flight_ktn" />
+          </div>
+        </div>
+
+        <!-- STEP 8: Card details (placeholder, should integrate Stripe) -->
+        <div class="step" data-step="8" aria-label="Card details">
+          <div>
+            <p class="step-title">Your card details</p>
+            <p class="step-description">
+              For security, card details are stored with our payment partner—not in this form.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="addCardButton"
+          >
+            Add a credit card securely
+          </button>
+
+          <p class="inline-note">
+            We’ll open a secure card entry screen powered by our payment provider
+            (e.g., Stripe). Your full card number is never stored in Solas systems.
+          </p>
+        </div>
+
+        <!-- STEP 9: Loyalty programs -->
+        <div class="step" data-step="9" aria-label="Loyalty programs">
+          <div>
+            <p class="step-title">Your loyalty programs</p>
+            <p class="step-description">
+              Share any hotel, airline, or other loyalty numbers so we can attach them to bookings.
+            </p>
+          </div>
+
+          <div class="grid">
+            <div>
+              <label>Program</label>
+              <input name="loyalty_program_1" placeholder="e.g. Bonvoy, World of Hyatt" />
+            </div>
+            <div>
+              <label>Number</label>
+              <input name="loyalty_number_1" />
+            </div>
+          </div>
+
+          <div class="grid">
+            <div>
+              <label>Program</label>
+              <input name="loyalty_program_2" placeholder="Optional second program" />
+            </div>
+            <div>
+              <label>Number</label>
+              <input name="loyalty_number_2" />
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 10: Additional notes -->
+        <div class="step" data-step="10" aria-label="Additional notes">
+          <div>
+            <p class="step-title">Anything else we should know?</p>
+            <p class="step-description">
+              Dream trips, accessibility needs, who you travel with, what makes a stay feel luxurious, and anything else.
+            </p>
+          </div>
+
+          <div>
+            <label>Any additional notes</label>
+            <textarea
+              name="notes"
+              placeholder="Tell us about your ideal trips, preferences, and anything that would help us plan better for you."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="footer-bar">
+          <div class="progress">
+            <div class="badge-chip">
+              <span class="badge-dot"></span>
+              <span>Secure intake</span>
+            </div>
+
+            <div class="progress-bar" aria-hidden="true">
+              <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button type="button" class="btn btn-ghost" id="backBtn">
+              ← Back
+            </button>
+            <button type="button" class="btn btn-primary" id="nextBtn">
+              Continue →
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="submitBtn"
+              style="display:none;"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+
+        <div id="status" class="status-text" aria-live="polite"></div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  // ----- CONFIGURE SUPABASE -----
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+  const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
+  const SUPABASE_ANON_KEY = "YOUR_PUBLIC_ANON_KEY";
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("token");
+
+  const tokenErrorEl = document.getElementById("tokenError");
+  const formEl = document.getElementById("intakeForm");
+  const statusEl = document.getElementById("status");
+  const stepIndicatorEl = document.getElementById("stepIndicator");
+  const progressFillEl = document.getElementById("progressFill");
+  const backBtn = document.getElementById("backBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const submitBtn = document.getElementById("submitBtn");
+
+  const TOTAL_STEPS = 10;
+  let currentStep = 1;
+  let linkValid = false;
+
+  function setStep(step) {
+    currentStep = Math.min(Math.max(step, 1), TOTAL_STEPS);
+    document
+      .querySelectorAll(".step")
+      .forEach((s) => s.classList.toggle("active", Number(s.dataset.step) === currentStep));
+
+    stepIndicatorEl.textContent = `Step ${currentStep} of ${TOTAL_STEPS}`;
+    const pct = (currentStep - 1) / (TOTAL_STEPS - 1);
+    progressFillEl.style.width = `${pct * 100}%`;
+
+    backBtn.style.display = currentStep === 1 ? "none" : "inline-flex";
+    nextBtn.style.display = currentStep === TOTAL_STEPS ? "none" : "inline-flex";
+    submitBtn.style.display = currentStep === TOTAL_STEPS ? "inline-flex" : "none";
+  }
+
+  backBtn.addEventListener("click", () => setStep(currentStep - 1));
+  nextBtn.addEventListener("click", () => setStep(currentStep + 1));
+
+  // ----- TOKEN VALIDATION -----
+  async function validateToken() {
+    if (!token) {
+      tokenErrorEl.style.display = "block";
+      formEl.style.display = "none";
+      return;
+    }
+
+    // simple check: token exists and not expired
+    const { data, error } = await supabase
+      .from("intake_links")
+      .select("token, expires_at, completed")
+      .eq("token", token)
+      .maybeSingle();
+
+    if (error || !data || data.completed || new Date(data.expires_at) < new Date()) {
+      tokenErrorEl.style.display = "block";
+      formEl.style.display = "none";
+      return;
+    }
+
+    linkValid = true;
+  }
+
+  // ----- FORM SUBMISSION -----
+  formEl.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!linkValid) return;
+
+    statusEl.textContent = "Saving your details…";
+    submitBtn.disabled = true;
+
+    const formData = new FormData(formEl);
+    const plain = {};
+    for (const [key, value] of formData.entries()) {
+      if (value !== "") plain[key] = value;
+    }
+
+    const payload = {
+      token,
+      data: plain,
+    };
+
+    const { error } = await supabase.from("client_intakes").insert(payload);
+
+    if (error) {
+      statusEl.textContent = "Sorry, we couldn’t save your details. Please try again.";
+      submitBtn.disabled = false;
+      return;
+    }
+
+    statusEl.textContent = "Thanks! Your details were saved.";
+    // optional: mark link as completed
+    await supabase
+      .from("intake_links")
+      .update({ completed: true, used_at: new Date().toISOString() })
+      .eq("token", token);
+
+    nextBtn.disabled = true;
+    backBtn.disabled = true;
+  });
+
+  // INIT
+  await validateToken();
+  if (!linkValid) {
+    statusEl.textContent = "";
+  } else {
+    setStep(1);
+  }
+</script>
+</body>
+</html>
