@@ -2,18 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Solas | Trip Details</title>
+  <title>SOLAS | Trip Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- FAVICONS -->
+  <link rel="icon" type="image/png" sizes="32x32"
+        href="https://whqvinewohyswochoyya.supabase.co/storage/v1/object/public/logos/solasTravel/solas-favicon-32.png">
+  <link rel="icon" type="image/png"
+        href="https://whqvinewohyswochoyya.supabase.co/storage/v1/object/public/logos/solasTravel/solas-favicon.png">
+  <link rel="apple-touch-icon"
+        href="https://whqvinewohyswochoyya.supabase.co/storage/v1/object/public/logos/solasTravel/solasTravel.png">
+
+  <!-- BRAND FONT: BODONI MODA -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
     :root {
-      --solas-bg: #050814;
-      --solas-primary: #f5b25f; /* accent */
-      --solas-primary-soft: rgba(245, 178, 95, 0.18);
-      --solas-surface: #ffffff;
-      --solas-text: #111827;
-      --solas-muted: #6b7280;
-      --solas-border: #e5e7eb;
-      --solas-error: #b91c1c;
+      --SOLAS-bg: #050814;
+      --SOLAS-primary: #f5b25f; /* accent */
+      --SOLAS-primary-soft: rgba(245, 178, 95, 0.18);
+      --SOLAS-surface: #ffffff;
+      --SOLAS-text: #f9f9f9;
+      --SOLAS-muted: #9ca3af;
+      --SOLAS-border: #e5e7eb;
+      --SOLAS-error: #b91c1c;
       --radius-xl: 18px;
     }
 
@@ -23,25 +40,29 @@
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--solas-text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      color: var(--SOLAS-text);
       background: #000;
     }
 
     .layout {
       min-height: 100vh;
       display: flex;
-      background: var(--solas-bg);
-      color: var(--solas-surface);
+      background: var(--SOLAS-bg);
+      color: var(--SOLAS-surface);
     }
+
+    /* LEFT PANEL */
 
     .photo-panel {
       flex: 1 1 50%;
       position: relative;
       overflow: hidden;
+      background: #000;
     }
 
-    .photo-panel img {
+    .photo-panel img.hero-image {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -55,8 +76,8 @@
       inset: 0;
       background: linear-gradient(
         to top,
-        rgba(0, 0, 0, 0.6),
-        rgba(0, 0, 0, 0.15)
+        rgba(0, 0, 0, 0.7),
+        rgba(0, 0, 0, 0.25)
       );
       pointer-events: none;
     }
@@ -65,10 +86,23 @@
       position: absolute;
       top: 1.75rem;
       left: 1.75rem;
-      font-size: 1.25rem;
-      letter-spacing: 0.16em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .photo-logo {
+      height: 42px;
+      width: auto;
+      display: block;
+    }
+
+    .photo-tagline {
+      font-family: "Bodoni Moda", "Times New Roman", serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      font-weight: 500;
+      color: rgba(229, 231, 235, 0.85);
     }
 
     .photo-caption {
@@ -76,15 +110,17 @@
       bottom: 2.5rem;
       left: 1.75rem;
       right: 1.75rem;
-      max-width: 340px;
+      max-width: 360px;
       font-size: 0.9rem;
       color: #e5e7eb;
     }
 
+    /* RIGHT PANEL */
+
     .form-panel {
       flex: 1 1 50%;
       background: radial-gradient(circle at top left, #111827 0, #050814 36%);
-      color: var(--solas-surface);
+      color: var(--SOLAS-surface);
       display: flex;
       justify-content: center;
       align-items: stretch;
@@ -103,9 +139,11 @@
       .layout {
         flex-direction: column;
       }
+
       .photo-panel {
-        min-height: 220px;
+        min-height: 260px;
       }
+
       .form-inner {
         padding: 2rem 1.5rem 2.5rem;
       }
@@ -115,23 +153,26 @@
       font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: var(--solas-primary);
+      color: var(--SOLAS-primary);
       margin-bottom: 0.75rem;
+      font-family: "Bodoni Moda", "Times New Roman", serif;
     }
 
     h1 {
-      font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+      font-size: clamp(1.9rem, 2.8vw, 2.4rem);
       margin: 0 0 0.75rem;
+      font-family: "Bodoni Moda", "Times New Roman", serif;
+      letter-spacing: 0.03em;
     }
 
     .subtitle {
       font-size: 0.95rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
       max-width: 32rem;
     }
 
     .card {
-      background: rgba(17, 24, 39, 0.9);
+      background: rgba(17, 24, 39, 0.92);
       border-radius: var(--radius-xl);
       padding: 1.5rem 1.75rem;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
@@ -142,14 +183,14 @@
     }
 
     .step-title {
-      font-weight: 600;
+      font-weight: 500;
       font-size: 1.1rem;
       margin-bottom: 0.25rem;
     }
 
     .step-description {
       font-size: 0.9rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
     }
 
     .grid {
@@ -174,7 +215,7 @@
 
     label {
       font-size: 0.85rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
@@ -185,7 +226,7 @@
       width: 5px;
       height: 5px;
       border-radius: 999px;
-      background: var(--solas-primary);
+      background: var(--SOLAS-primary);
     }
 
     input,
@@ -193,11 +234,11 @@
     textarea {
       width: 100%;
       border-radius: 999px;
-      border: 1px solid var(--solas-border);
+      border: 1px solid var(--SOLAS-border);
       padding: 0.7rem 0.85rem;
       font-size: 0.95rem;
       outline: none;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       color: #f9fafb;
     }
 
@@ -215,8 +256,8 @@
     input:focus,
     select:focus,
     textarea:focus {
-      border-color: var(--solas-primary);
-      box-shadow: 0 0 0 1px var(--solas-primary-soft);
+      border-color: var(--SOLAS-primary);
+      box-shadow: 0 0 0 1px var(--SOLAS-primary-soft);
     }
 
     .field-inline {
@@ -235,7 +276,7 @@
       background: rgba(15, 23, 42, 0.9);
       white-space: nowrap;
       font-size: 0.85rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
     }
 
     .flag-prefix span {
@@ -252,7 +293,7 @@
       justify-content: space-between;
       gap: 1rem;
       font-size: 0.85rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
     }
 
     .progress {
@@ -274,7 +315,7 @@
       position: absolute;
       inset: 0;
       width: 0;
-      background: var(--solas-primary);
+      background: var(--SOLAS-primary);
       transition: width 0.25s ease-out;
     }
 
@@ -298,7 +339,7 @@
     }
 
     .btn-primary {
-      background: var(--solas-primary);
+      background: var(--SOLAS-primary);
       color: #111827;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
     }
@@ -311,12 +352,12 @@
 
     .btn-ghost {
       border-color: rgba(148, 163, 184, 0.45);
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
     }
 
     .btn-ghost:hover {
-      border-color: var(--solas-primary);
-      color: var(--solas-primary);
+      border-color: var(--SOLAS-primary);
+      color: var(--SOLAS-primary);
     }
 
     .step {
@@ -338,12 +379,7 @@
 
     .status-text {
       font-size: 0.85rem;
-      color: var(--solas-muted);
-    }
-
-    .tagline-name {
-      font-weight: 500;
-      color: #f9fafb;
+      color: var(--SOLAS-muted);
     }
 
     .badge-chip {
@@ -355,43 +391,40 @@
       background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(148, 163, 184, 0.3);
       font-size: 0.75rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
     }
 
     .badge-dot {
       width: 6px;
       height: 6px;
       border-radius: 999px;
-      background: var(--solas-primary);
-    }
-
-    .muted-link {
-      text-decoration: underline;
-      text-decoration-style: dotted;
-      cursor: pointer;
+      background: var(--SOLAS-primary);
     }
 
     .inline-note {
       font-size: 0.8rem;
-      color: var(--solas-muted);
+      color: var(--SOLAS-muted);
       margin-top: 0.25rem;
     }
   </style>
 </head>
 <body>
 <div class="layout">
-  <!-- LEFT PANEL / IMAGERY -->
+  <!-- LEFT PANEL / BRANDING -->
   <aside class="photo-panel" aria-hidden="true">
-    <!-- You can swap this per-step using JS if you want -->
-    <img src="hero-1.jpg" alt="" />
+    <!-- Replace hero-1.jpg with your chosen background image if desired -->
+    <img src="hero-1.jpg" alt="" class="hero-image" />
     <div class="photo-overlay"></div>
 
-    <div class="photo-branding">SOLAS</div>
-    <div class="photo-caption">
-      Thoughtfully planned journeys, tailored to the way you actually like to travel.
+    <div class="photo-branding">
+      <img
+        class="photo-logo"
+        src="https://whqvinewohyswochoyya.supabase.co/storage/v1/object/public/logos/solasTravel/solasTravel_white.png"
+        alt="SOLAS Travel"
+      />
     </div>
 
-    <!-- Step counter in the bottom-left, mobile-style -->
+    <!-- Step counter -->
     <div style="position:absolute; bottom:1.5rem; left:1.75rem; font-size:0.8rem; letter-spacing:0.14em; text-transform:uppercase;">
       <span id="stepIndicator">Step 1 of 10</span>
     </div>
@@ -401,18 +434,18 @@
   <main class="form-panel">
     <div class="form-inner">
       <header>
-        <div class="kicker">Trip details</div>
-        <h1>Hi, let’s get to know each other</h1>
+        <div class="kicker">Client Intake</div>
+        <h1>Welcome to the SOLAS family.</h1>
         <p class="subtitle">
           Your details will be securely saved and only shared with
-          your Solas advisor. We’ll use this once, to make all your future trips easier.
+          your SOLAS Team. We’ll use this once, to make all your future trips easier.
         </p>
       </header>
 
       <section id="tokenError" style="display:none;">
         <div class="error-banner">
           This link is no longer available. It may have expired or already been used.
-          Please contact your Solas advisor for a new secure link.
+          Please contact your SOLAS advisor for a new secure link.
         </div>
       </section>
 
@@ -568,7 +601,6 @@
               <option value="US">United States</option>
               <option value="MX">Mexico</option>
               <option value="CA">Canada</option>
-              <!-- etc -->
             </select>
           </div>
 
@@ -733,7 +765,7 @@
           </div>
         </div>
 
-        <!-- STEP 8: Card details (placeholder, should integrate Stripe) -->
+        <!-- STEP 8: Card details (placeholder) -->
         <div class="step" data-step="8" aria-label="Card details">
           <div>
             <p class="step-title">Your card details</p>
@@ -751,8 +783,8 @@
           </button>
 
           <p class="inline-note">
-            We’ll open a secure card entry screen powered by our payment provider
-            (e.g., Stripe). Your full card number is never stored in Solas systems.
+            We’ll open a secure card entry screen powered by our payment provider.
+            Your full card number is never stored in SOLAS systems.
           </p>
         </div>
 
@@ -870,7 +902,9 @@
     currentStep = Math.min(Math.max(step, 1), TOTAL_STEPS);
     document
       .querySelectorAll(".step")
-      .forEach((s) => s.classList.toggle("active", Number(s.dataset.step) === currentStep));
+      .forEach((s) =>
+        s.classList.toggle("active", Number(s.dataset.step) === currentStep)
+      );
 
     stepIndicatorEl.textContent = `Step ${currentStep} of ${TOTAL_STEPS}`;
     const pct = (currentStep - 1) / (TOTAL_STEPS - 1);
@@ -892,7 +926,6 @@
       return;
     }
 
-    // simple check: token exists and not expired
     const { data, error } = await supabase
       .from("intake_links")
       .select("token, expires_at, completed")
@@ -930,13 +963,13 @@
     const { error } = await supabase.from("client_intakes").insert(payload);
 
     if (error) {
-      statusEl.textContent = "Sorry, we couldn’t save your details. Please try again.";
+      statusEl.textContent =
+        "Sorry, we couldn’t save your details. Please try again.";
       submitBtn.disabled = false;
       return;
     }
 
     statusEl.textContent = "Thanks! Your details were saved.";
-    // optional: mark link as completed
     await supabase
       .from("intake_links")
       .update({ completed: true, used_at: new Date().toISOString() })
